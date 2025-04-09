@@ -2,27 +2,35 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate("path/to/your/serviceAccountKey.json")
+cred = credentials.Certificate("D:\\GIT\\ShoppingList-WEB\\handleliste-3bdaa-firebase-adminsdk-fbsvc-37480a5d30.json")
 firebase_admin.initialize_app(cred)
 
 # Connect to Firestore
 db = firestore.client()
 
-# Example: Add data to Firestore
-def add_data(collection_name, document_id, data):
-    try:
-        db.collection(collection_name).document(document_id).set(data)
-        print(f"Document {document_id} added to {collection_name} collection.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
+def add_item(name, buy, added_by, shop, buy_number, bought_date):
+  item = {
+    "Name": name,
+    "Buy": buy,
+    "AddedBy": added_by,
+    "Shop": shop,
+    "BuyNumber": buy_number,
+    "BoughtDate": bought_date
+  }
+  db.collection("handleliste").document().set(item)
 
-# Example usage
-if __name__ == "__main__":
-    collection_name = "users"
-    document_id = "user1"
-    data = {
-        "name": "John Doe",
-        "email": "johndoe@example.com",
-        "age": 30
-    }
-    add_data(collection_name, document_id, data)
+def get_items():
+  items = db.collection("handleliste").stream()
+  return [{doc.id: doc.to_dict()} for doc in items]
+
+def update_item(item_id, field, value):
+  db.collection("handleliste").document(item_id).update({field: value})
+
+def delete_item(item_id):
+  db.collection("handleliste").document(item_id).delete()
+
+add_item("Melk", "Yes", "Morten", "Extra", 1, "2025-03-15")
+
+items = get_items()
+for item in items:
+  print(item)
