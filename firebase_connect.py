@@ -73,7 +73,7 @@ def update_item_by_name_and_shop(name, shop):
             # Update the item
             updated_bought_dates = [datetime.now().strftime("%Y-%m-%d")] + item_data.get('BoughtDates', [])
             ref.child(item_id).update({
-                "Buy": "No",
+                "Buy": False,
                 "BuyNumber": item_data.get("BuyNumber", 0) + 1,
                 "BoughtDates": updated_bought_dates
             })
@@ -97,7 +97,7 @@ try:
     # Example with an array of ten dates
     add_item(
         name="Melk", 
-        buy="Yes", 
+        buy=True, 
         added_by="Morten", 
         shop="Extra", 
         buy_number=1, 

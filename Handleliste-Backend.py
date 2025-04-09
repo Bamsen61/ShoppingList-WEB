@@ -12,16 +12,17 @@ CORS(app)  # Allow cross-origin requests
 # Firebase Realtime Database setup
 cred = credentials.Certificate("D:\\GIT\\ShoppingList-WEB\\handleliste-3bdaa-firebase-adminsdk-fbsvc-37480a5d30.json")
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://<your-database-name>.firebaseio.com/'  # Replace with your database URL
+    'databaseURL': 'https://handleliste-3bdaa-default-rtdb.europe-west1.firebasedatabase.app/'
 })
-items_ref = db.reference("items")
+items_ref = db.reference("handleliste")
 
-# Get items for a shop where Buy = True
+# Get items for a shop where Buy = True (case insensitive shop match)
 @app.route("/items")
 def get_items():
-    shop = request.args.get("shop")
+    shop = request.args.get("shop", "").lower()
     items = items_ref.get() or {}
-    filtered = [dict(id=k, **v) for k, v in items.items() if v.get("Shop") == shop and v.get("Buy") == True]
+    filtered = [dict(id=k, **v) for k, v in items.items()
+                if v.get("Buy") == True and v.get("Shop", "").lower() == shop]
     return jsonify(filtered)
 
 # Get all items
