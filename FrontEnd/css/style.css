@@ -75,3 +75,24 @@ body[data-font-size="24"] { font-size: 24px; }
 .dialog-content button {
   margin: 5px;
 }
+
+/* Style for item rows in the delete list */
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background: white;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.item-name {
+  text-align: left;
+  flex: 1;
+}
+
+.item-shop {
+  text-align: right;
+  flex: 1;
+  color: #888; /* Optional: Make the shop text slightly lighter */
+}

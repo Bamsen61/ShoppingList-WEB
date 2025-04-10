@@ -11,7 +11,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   items.forEach(item => {
     const li = document.createElement("li");
-    li.textContent = item.Name;
+    li.classList.add("item-row");
+
+    const nameSpan = document.createElement("span");
+    nameSpan.classList.add("item-name");
+    nameSpan.textContent = item.Name;
+
+    const shopSpan = document.createElement("span");
+    shopSpan.classList.add("item-shop");
+    shopSpan.textContent = item.Shop;
+
+    li.appendChild(nameSpan);
+    li.appendChild(shopSpan);
 
     li.addEventListener("click", () => {
       itemToDelete = item;
