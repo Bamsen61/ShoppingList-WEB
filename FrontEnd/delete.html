@@ -11,16 +11,17 @@
     <h2>Delete Items</h2>
     <ul id="deleteList" class="item-list"></ul>
 
-    <div id="confirmDialog" class="dialog hidden">
-      <div class="dialog-content">
-        <p id="confirmText">Are you sure you want to delete this item?</p>
-        <button onclick="confirmDelete()">Yes</button>
-        <button onclick="closeConfirmDialog()">No</button>
-      </div>
-    </div>
-
     <div class="footer">
       <button onclick="goToMainPage()">Shop</button>
+    </div>
+  </div>
+
+  <!-- Confirmation Dialog -->
+  <div id="confirmDialog" class="dialog hidden">
+    <div class="dialog-content">
+      <p id="confirmText">Are you sure you want to delete this item?</p>
+      <button onclick="confirmDelete()">Yes</button>
+      <button onclick="closeConfirmDialog()">No</button>
     </div>
   </div>
 

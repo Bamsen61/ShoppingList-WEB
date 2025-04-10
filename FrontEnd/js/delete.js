@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     li.addEventListener("click", () => {
       itemToDelete = item;
       document.getElementById("confirmText").textContent = `Are you sure you want to delete '${item.Name}'?`;
-      document.getElementById("confirmDialog").classList.remove("hidden");
+      document.getElementById("confirmDialog").classList.remove("hidden"); // Show dialog
     });
 
     list.appendChild(li);
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 function closeConfirmDialog() {
-  document.getElementById("confirmDialog").classList.add("hidden");
+  document.getElementById("confirmDialog").classList.add("hidden"); // Hide dialog
   itemToDelete = null;
 }
 

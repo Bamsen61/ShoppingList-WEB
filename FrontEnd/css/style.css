@@ -51,3 +51,27 @@ button {
 body[data-font-size="16"] { font-size: 16px; }
 body[data-font-size="20"] { font-size: 20px; }
 body[data-font-size="24"] { font-size: 24px; }
+
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.dialog.hidden {
+  display: none;
+}
+
+.dialog-content {
+  text-align: center;
+}
+
+.dialog-content button {
+  margin: 5px;
+}
