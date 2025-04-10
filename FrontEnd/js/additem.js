@@ -20,9 +20,9 @@ async function submitItem() {
     body: JSON.stringify({ Name, Shop, AddedBy })
   });
 
-  window.location.href = "add.html";
+  window.location.href = "index.html";
 }
 
 function cancelAdd() {
-  window.location.href = "add.html";
+  window.location.href = "index.html";
 }

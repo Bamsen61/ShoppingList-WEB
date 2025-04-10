@@ -1,7 +1,5 @@
 // Add page logic
 
-let itemToDelete = null;
-
 document.addEventListener("DOMContentLoaded", async () => {
   applySavedFontSize();
   const shop = getFromStorage("shop", "");
@@ -27,13 +25,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       li.remove();
     });
 
-    li.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-      itemToDelete = item;
-      document.getElementById("deleteItemName").textContent = `Delete '${item.Name}'?`;
-      document.getElementById("deleteDialog").classList.remove("hidden");
-    });
-
     list.appendChild(li);
   });
 });
@@ -48,20 +39,4 @@ function closeAddDialog() {
 
 function goToShopPage() {
   window.location.href = "index.html";
-}
-
-function closeDeleteDialog() {
-  document.getElementById("deleteDialog").classList.add("hidden");
-  itemToDelete = null;
-}
-
-async function confirmDelete() {
-  if (!itemToDelete) return;
-  await fetch(`${API_BASE}/item`, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id: itemToDelete.id })
-  });
-  closeDeleteDialog();
-  location.reload();
 }
