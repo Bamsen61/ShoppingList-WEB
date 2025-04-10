@@ -1,0 +1,53 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f0f0f0;
+}
+
+.container {
+  padding: 1rem;
+  max-width: 600px;
+  margin: auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.shop-name {
+  font-weight: bold;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.item-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.item-list li {
+  padding: 0.75rem;
+  background: white;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.footer {
+  text-align: center;
+}
+
+button {
+  padding: 0.5rem 1.5rem;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+/* Font size control */
+body[data-font-size="16"] { font-size: 16px; }
+body[data-font-size="20"] { font-size: 20px; }
+body[data-font-size="24"] { font-size: 24px; }
