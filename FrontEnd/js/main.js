@@ -3,6 +3,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
   applySavedFontSize();
 
+  // Load the saved person or default to "Morten"
+  const person = getFromStorage("person", "Morten");
+  document.getElementById("personSelector").value = person;
+
   const shop = getFromStorage("shop", "");
   document.getElementById("shopName").textContent = shop || "Select shop";
 
@@ -35,6 +39,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     list.appendChild(li);
   });
 });
+
+function updatePerson() {
+  const person = document.getElementById("personSelector").value;
+  saveToStorage("person", person); // Save the selected person to local storage
+}
 
 async function fetchItems(shop) {
   const res = await fetch(`${API_BASE}/all-items`);

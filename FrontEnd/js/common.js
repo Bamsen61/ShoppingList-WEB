@@ -2,8 +2,12 @@
 
 const API_BASE = "http://127.0.0.1:5000"; // Adjust if hosted elsewhere
 
-function getFromStorage(key, def = "") {
-  return localStorage.getItem(key) || def;
+function getFromStorage(key, defaultValue) {
+  return localStorage.getItem(key) || defaultValue; // Retrieve the value or use the default
+}
+
+function saveToStorage(key, value) {
+  localStorage.setItem(key, value); // Save the value to local storage
 }
 
 function setToStorage(key, value) {

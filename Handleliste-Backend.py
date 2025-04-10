@@ -37,7 +37,8 @@ def add_item():
     data = request.json
     data["Buy"] = True
     data["BuyNumber"] = 0
-    data["BoughtDate"] = [None]*10
+    data["BoughtDate"] = [None] * 10
+    data["AddedBy"] = data.get("AddedBy", "Anonymous")  # Default to "Anonymous" if not provided
     items_ref.push(data)
     return ("", 204)
 
