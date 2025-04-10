@@ -2,19 +2,30 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
   applySavedFontSize();
-  const shop = getFromStorage("shop", "");
 
   const res = await fetch(`${API_BASE}/all-items`);
   const items = await res.json();
-  const filtered = items.filter(i => !i.Buy);
-  filtered.sort((a, b) => a.Name.localeCompare(b.Name));
 
   const list = document.getElementById("addList");
   list.innerHTML = "";
 
-  filtered.forEach(item => {
+  // Filter out items where Buy is True
+  const filteredItems = items.filter(item => item.Buy !== true);
+
+  filteredItems.forEach(item => {
     const li = document.createElement("li");
-    li.textContent = item.Name;
+    li.classList.add("item-row");
+
+    const nameSpan = document.createElement("span");
+    nameSpan.classList.add("item-name");
+    nameSpan.textContent = item.Name;
+
+    const shopSpan = document.createElement("span");
+    shopSpan.classList.add("item-shop");
+    shopSpan.textContent = item.Shop;
+
+    li.appendChild(nameSpan);
+    li.appendChild(shopSpan);
 
     li.addEventListener("click", async () => {
       await fetch(`${API_BASE}/item/buy`, {
