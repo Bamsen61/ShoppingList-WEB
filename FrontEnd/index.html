@@ -21,10 +21,16 @@
 
     <div class="footer">
       <button onclick="goToAddPage()">Add</button>
+      <button onclick="goToDeletePage()">Delete</button> <!-- New Delete button -->
     </div>
   </div>
 
   <script src="js/common.js"></script>
   <script src="js/main.js"></script>
+  <script>
+    function goToDeletePage() {
+      window.location.href = "delete.html";
+    }
+  </script>
 </body>
 </html>
