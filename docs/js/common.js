@@ -1,6 +1,8 @@
 // Shared utility functions
 
-const API_BASE = "http://127.0.0.1:5000"; // Adjust if hosted elsewhere
+// const API_BASE = "http://127.0.0.1:5000"; // Adjust if hosted elsewhere
+const API_BASE = "https://shoppinglist-backend.fly.dev"; // Production URL from Fly.io
+
 
 function getFromStorage(key, defaultValue) {
   return localStorage.getItem(key) || defaultValue; // Retrieve the value or use the default

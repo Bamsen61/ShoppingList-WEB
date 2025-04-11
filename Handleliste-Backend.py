@@ -7,13 +7,16 @@ from firebase_admin import credentials, db
 from datetime import datetime  # Import to get the current date
 import secrets  # For generating secure tokens
 from functools import wraps
+import os
 
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app)  # Allow cross-origin requests
 
 # Firebase Realtime Database setup
-cred = credentials.Certificate("D:\\GIT\\ShoppingList-WEB\\handleliste-3bdaa-firebase-adminsdk-fbsvc-37480a5d30.json")
+# cred = credentials.Certificate("D:\\GIT\\ShoppingList-WEB\\firebase-creds.json") # Local path to your Firebase credentials file
+cred = credentials.Certificate("firebase-creds.json")
+
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://handleliste-3bdaa-default-rtdb.europe-west1.firebasedatabase.app/'
 })
@@ -116,4 +119,6 @@ def delete_item():
     return ("", 204)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # app.run(debug=True)
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
