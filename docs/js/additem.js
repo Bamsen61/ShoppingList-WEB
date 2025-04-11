@@ -15,7 +15,8 @@ async function submitItem() {
   }
 
   // Send the item data to the backend
-  await fetch(`${API_BASE}/item/add`, {
+  // await fetch(`${API_BASE}/item/add`, {
+  await fetchWithAuth(`${API_BASE}/item/add`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ Name, Shop, AddedBy }) // Include AddedBy in the request
