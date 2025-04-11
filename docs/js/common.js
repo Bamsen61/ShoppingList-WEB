@@ -51,3 +51,24 @@ async function markItemAsBought(id) {
     body: JSON.stringify({ id })
   });
 }
+
+async function fetchWithAuth(url, options = {}) {
+  const token = getFromStorage("authToken", null);
+  if (!token) {
+    window.location.href = "login.html"; // Redirect to login if no token
+    return;
+  }
+
+  options.headers = {
+    ...options.headers,
+    Authorization: token, // Add the token to the request headers
+  };
+
+  const response = await fetch(url, options);
+  if (response.status === 401) {
+    alert("Session expired. Please log in again.");
+    localStorage.removeItem("authToken");
+    window.location.href = "login.html";
+  }
+  return response;
+}

@@ -46,8 +46,9 @@ function updatePerson() {
 }
 
 async function fetchItems(shop) {
-  const res = await fetch(`${API_BASE}/all-items`);
-  const items = await res.json();
+  // Use fetchWithAuth to include the token in the request
+  const response = await fetchWithAuth(`${API_BASE}/all-items`);
+  const items = await response.json();
 
   if (shop.toLowerCase() === "all") {
     // Return all items with Buy = True
@@ -61,7 +62,7 @@ async function fetchItems(shop) {
 async function markItemAsBought(itemId) {
   const BoughtBy = getFromStorage("person", "Anonymous"); // Retrieve the selected person from local storage
 
-  await fetch(`${API_BASE}/item/buy`, {
+  await fetchWithAuth(`${API_BASE}/item/buy`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id: itemId, BoughtBy }) // Include BoughtBy in the request

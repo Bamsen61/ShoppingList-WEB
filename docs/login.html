@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Login</h2>
+    <label>
+      Username:
+      <input type="text" id="username">
+    </label><br>
+    <label>
+      Password:
+      <input type="password" id="password">
+    </label><br>
+    <button onclick="login()">Login</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    async function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      const res = await fetch(`${API_BASE}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        saveToStorage("authToken", data.token); // Save token to local storage
+        window.location.href = "index.html"; // Redirect to the main page
+      } else {
+        alert("Invalid username or password");
+      }
+    }
+  </script>
+</body>
+</html>

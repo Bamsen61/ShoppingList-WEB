@@ -5,6 +5,8 @@ from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, db
 from datetime import datetime  # Import to get the current date
+import secrets  # For generating secure tokens
+from functools import wraps
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -17,8 +19,37 @@ firebase_admin.initialize_app(cred, {
 })
 items_ref = db.reference("handleliste")
 
+# In-memory storage for simplicity (use a database in production)
+USERS = {"Morten": "President", "Linh": "Smile1982"}  # Replace with your usernames and passwords
+TOKENS = {}  # Maps tokens to usernames
+
+# Login endpoint
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.json
+    username = data.get("username")
+    password = data.get("password")
+
+    if USERS.get(username) == password:
+        # Generate a token
+        token = secrets.token_hex(16)
+        TOKENS[token] = username
+        return jsonify({"token": token}), 200
+    return jsonify({"error": "Invalid username or password"}), 401
+
+# Authentication decorator
+def require_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.headers.get("Authorization")
+        if token not in TOKENS:
+            return jsonify({"error": "Unauthorized"}), 401
+        return f(*args, **kwargs)
+    return decorated
+
 # Get items for a shop where Buy = True (case insensitive shop match)
 @app.route("/items")
+@require_auth
 def get_items():
     shop = request.args.get("shop", "").lower()
     items = items_ref.get() or {}
@@ -28,6 +59,7 @@ def get_items():
 
 # Get all items
 @app.route("/all-items")
+@require_auth
 def get_all_items():
     items = items_ref.get() or {}
     return jsonify([dict(id=k, **v) for k, v in items.items()])
@@ -60,7 +92,7 @@ def buy_item():
     updated_bought_dates = [current_date] + bought_dates[:9]  # Add the current date and keep only the last 10 dates
 
     updated_data = {
-        "Buy": True,
+        "Buy": False,
         "BoughtBy": bought_by,
         "BoughtDate": updated_bought_dates,
         "BuyNumber": item.get("BuyNumber", 0) + 1  # Increment BuyNumber
