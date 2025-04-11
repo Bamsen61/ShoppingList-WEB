@@ -22,7 +22,7 @@ function updateFontSize() {
 
 function applySavedFontSize() {
   const saved = getFromStorage("fontSize", "16");
-  document.body.setAttribute("data-font-size", saved);
+  document.body.setAttribute("data-font-size", saved); // Set the font size on the body
   const selector = document.getElementById("fontSize");
   if (selector) selector.value = saved;
 }

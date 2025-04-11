@@ -138,3 +138,11 @@ body[data-font-size="24"] { font-size: 24px; }
   flex: 1;
   color: #888; /* Optional: Make the shop text slightly lighter */
 }
+
+/* Ensure input boxes follow the font size */
+input {
+  font-size: inherit; /* Inherit font size from the body */
+  padding: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}

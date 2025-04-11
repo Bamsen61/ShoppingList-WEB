@@ -1,7 +1,7 @@
 // Logic for additem.html
 
 document.addEventListener("DOMContentLoaded", () => {
-  applySavedFontSize();
+  applySavedFontSize(); // Apply the saved font size to the body
 });
 
 async function submitItem() {
