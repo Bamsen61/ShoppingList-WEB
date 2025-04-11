@@ -59,9 +59,11 @@ async function fetchItems(shop) {
 }
 
 async function markItemAsBought(itemId) {
-  await fetch(`${API_BASE}/item/remove`, {
+  const BoughtBy = getFromStorage("person", "Anonymous"); // Retrieve the selected person from local storage
+
+  await fetch(`${API_BASE}/item/buy`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id: itemId })
+    body: JSON.stringify({ id: itemId, BoughtBy }) // Include BoughtBy in the request
   });
 }

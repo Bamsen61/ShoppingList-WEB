@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, db
+from datetime import datetime  # Import to get the current date
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -46,7 +47,26 @@ def add_item():
 @app.route("/item/buy", methods=["POST"])
 def buy_item():
     item_id = request.json["id"]
-    items_ref.child(item_id).update({"Buy": True})
+    bought_by = request.json.get("BoughtBy", "Anonymous")  # Get the name of the person who bought the item
+
+    # Retrieve the current item data
+    item = items_ref.child(item_id).get()
+    if not item:
+        return jsonify({"error": "Item not found"}), 404
+
+    # Update the item
+    bought_dates = item.get("BoughtDate", [])
+    current_date = datetime.now().strftime("%Y-%m-%d")  # Get the current date in YYYY-MM-DD format
+    updated_bought_dates = [current_date] + bought_dates[:9]  # Add the current date and keep only the last 10 dates
+
+    updated_data = {
+        "Buy": True,
+        "BoughtBy": bought_by,
+        "BoughtDate": updated_bought_dates,
+        "BuyNumber": item.get("BuyNumber", 0) + 1  # Increment BuyNumber
+    }
+
+    items_ref.child(item_id).update(updated_data)
     return ("", 204)
 
 # Set Buy = False for existing item
