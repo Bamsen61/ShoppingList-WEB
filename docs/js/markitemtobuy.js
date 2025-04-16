@@ -3,9 +3,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
   applySavedFontSize();
 
-  // const res = await fetch(`${API_BASE}/all-items`);
+  // Fetch all items from the backend
   const res = await fetchWithAuth(`${API_BASE}/all-items`);
-
   const items = await res.json();
 
   const list = document.getElementById("addList");
@@ -29,18 +28,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     li.appendChild(nameSpan);
     li.appendChild(shopSpan);
 
+    // Add click event listener to mark item to buy
     li.addEventListener("click", async () => {
-      await fetch(`${API_BASE}/item/buy`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: item.id })
-      });
-      li.remove();
+      await MarkItemToBuy(item.id, li);
     });
 
     list.appendChild(li);
   });
 });
+
+// Mark an item to be bought (set Buy to true)
+async function MarkItemToBuy(itemId, liElement) {
+  await fetchWithAuth(`${API_BASE}/item/markitemtobuy`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: itemId }) // Send the item id in the request body
+  });
+  liElement.remove(); // Remove the item from the list after marking it as to buy
+}
 
 function showAddItemDialog() {
   window.location.href = "additem.html";

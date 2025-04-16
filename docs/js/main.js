@@ -62,7 +62,7 @@ async function fetchItems(shop) {
 async function markItemAsBought(itemId) {
   const BoughtBy = getFromStorage("person", "Anonymous"); // Retrieve the selected person from local storage
 
-  await fetchWithAuth(`${API_BASE}/item/buy`, {
+  await fetchWithAuth(`${API_BASE}/item/markitemasbought`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id: itemId, BoughtBy }) // Include BoughtBy in the request

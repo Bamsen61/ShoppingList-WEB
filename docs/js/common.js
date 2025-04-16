@@ -1,8 +1,13 @@
 // Shared utility functions
 
-// const API_BASE = "http://127.0.0.1:5000"; // Adjust if hosted elsewhere
-const API_BASE = "https://shoppinglist-backend.fly.dev"; // Production URL from Fly.io
+// Determine the API base URL based on the environment
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+const API_BASE = isLocal ? "http://127.0.0.1:8080" : "https://shoppinglist-backend.fly.dev"; // Use local or production URL
 
+// Automatically set a debug token when running locally
+if (isLocal) {
+  saveToStorage("authToken", "debug-token");
+}
 
 function getFromStorage(key, defaultValue) {
   return localStorage.getItem(key) || defaultValue; // Retrieve the value or use the default

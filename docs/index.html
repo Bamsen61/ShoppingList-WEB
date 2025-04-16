@@ -32,8 +32,20 @@
   <script src="js/common.js"></script>
   <script src="js/main.js"></script>
   <script>
+    function goToAddPage() {
+      window.location.href = "markitemtobuy.html";
+    }
     function goToDeletePage() {
       window.location.href = "delete.html";
+    }
+  </script>
+  <script>
+    // Skip login check when running locally
+    if (isLocal) {
+      const token = getFromStorage("authToken", null);
+      if (!token) {
+        saveToStorage("authToken", "debug-token");
+      }
     }
   </script>
 </body>

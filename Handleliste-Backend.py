@@ -1,6 +1,6 @@
 # === Python backend using Flask and Firebase Realtime Database ===
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory, g
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, db
@@ -8,14 +8,27 @@ from datetime import datetime  # Import to get the current date
 import secrets  # For generating secure tokens
 from functools import wraps
 import os
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
 
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app)  # Allow cross-origin requests
 
 # Firebase Realtime Database setup
-# cred = credentials.Certificate("D:\\GIT\\ShoppingList-WEB\\firebase-creds.json") # Local path to your Firebase credentials file
-cred = credentials.Certificate("firebase-creds.json")
+import os
+
+# Determine the path to the Firebase credentials file based on the environment
+if os.environ.get("FLY_APP_NAME"):
+    # Production environment
+    cred_path = "firebase-creds.json"
+else:
+    # Local environment
+    cred_path = "D:\\GIT\\ShoppingList-WEB\\firebase-creds.json"
+
+cred = credentials.Certificate(cred_path)
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://handleliste-3bdaa-default-rtdb.europe-west1.firebasedatabase.app/'
@@ -25,6 +38,21 @@ items_ref = db.reference("handleliste")
 # In-memory storage for simplicity (use a database in production)
 USERS = {"Morten": "President", "Linh": "Smile1982"}  # Replace with your usernames and passwords
 TOKENS = {}  # Maps tokens to usernames
+
+# Automatically log in as "Morten" during local debugging
+if not os.environ.get("FLY_APP_NAME"):
+    @app.before_request
+    def auto_login_for_debug():
+        if request.endpoint not in ["static", "serve_frontend"]:
+            g.debug_token = "debug-token"
+            TOKENS["debug-token"] = "Morten"
+
+# Log incoming requests
+# @app.before_request
+# def log_request_info():
+#     logging.debug(f"Request endpoint: {request.endpoint}")
+#     logging.debug(f"Request headers: {request.headers}")
+#     logging.debug(f"Request data: {request.data}")
 
 # Login endpoint
 @app.route("/login", methods=["POST"])
@@ -45,6 +73,9 @@ def require_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.headers.get("Authorization")
+        # Check for debug token in Flask's g (for local debug)
+        if not token and hasattr(g, "debug_token"):
+            token = g.debug_token
         if token not in TOKENS:
             return jsonify({"error": "Unauthorized"}), 401
         return f(*args, **kwargs)
@@ -78,8 +109,15 @@ def add_item():
     items_ref.push(data)
     return ("", 204)
 
-# Set Buy = True for existing item
-@app.route("/item/buy", methods=["POST"])
+# Mark an item to buy
+@app.route("/item/markitemtobuy", methods=["POST"])
+def mark_item_to_buy():
+    item_id = request.json["id"]
+    items_ref.child(item_id).update({"Buy": True})
+    return ("", 204)
+
+# Mark an item as bought
+@app.route("/item/markitemasbought", methods=["POST"])
 def buy_item():
     item_id = request.json["id"]
     bought_by = request.json.get("BoughtBy", "Anonymous")  # Get the name of the person who bought the item
