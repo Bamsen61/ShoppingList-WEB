@@ -98,8 +98,8 @@ def get_all_items():
     items = items_ref.get() or {}
     return jsonify([dict(id=k, **v) for k, v in items.items()])
 
-# Add a new item
-@app.route("/item/add", methods=["POST"])
+# Add a new item to the database
+@app.route("/item/additemtodatabase", methods=["POST"])
 def add_item():
     data = request.json
     data["Buy"] = True
