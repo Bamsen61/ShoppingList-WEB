@@ -9,6 +9,7 @@ import secrets  # For generating secure tokens
 from functools import wraps
 import os
 import logging
+import json
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -38,6 +39,23 @@ items_ref = db.reference("handleliste")
 # In-memory storage for simplicity (use a database in production)
 USERS = {"Morten": "President", "Linh": "Smile1982"}  # Replace with your usernames and passwords
 TOKENS = {}  # Maps tokens to usernames
+TOKENS_FILE = os.path.join(os.path.dirname(__file__), 'tokens.json')
+
+# Load tokens from file at startup
+if os.path.exists(TOKENS_FILE):
+    try:
+        with open(TOKENS_FILE, 'r') as f:
+            TOKENS.update(json.load(f))
+    except Exception as e:
+        logging.error(f"Failed to load tokens from {TOKENS_FILE}: {e}")
+
+# Helper to save tokens to file
+def save_tokens():
+    try:
+        with open(TOKENS_FILE, 'w') as f:
+            json.dump(TOKENS, f)
+    except Exception as e:
+        logging.error(f"Failed to save tokens to {TOKENS_FILE}: {e}")
 
 # Automatically log in as "Morten" during local debugging
 if not os.environ.get("FLY_APP_NAME"):
@@ -65,6 +83,7 @@ def login():
         # Generate a token
         token = secrets.token_hex(16)
         TOKENS[token] = username
+        save_tokens()  # Persist tokens on every change
         return jsonify({"token": token}), 200
     return jsonify({"error": "Invalid username or password"}), 401
 
