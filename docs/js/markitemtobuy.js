@@ -48,7 +48,7 @@ async function MarkItemToBuy(itemId, liElement) {
 }
 
 function showAddItemDialog() {
-  window.location.href = "additem.html";
+  window.location.href = "additemtodatabase.html";
 }
 
 function closeAddDialog() {
