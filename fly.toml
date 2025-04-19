@@ -8,6 +8,12 @@ primary_region = 'arn'
 
 [build]
 
+[deploy]
+  strategy = "immediate"
+
+[scale]
+  count = 1
+
 [env]
   PORT = '8080'
 
