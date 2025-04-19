@@ -51,6 +51,7 @@ button {
 body[data-font-size="16"] { font-size: 16px; }
 body[data-font-size="20"] { font-size: 20px; }
 body[data-font-size="24"] { font-size: 24px; }
+body[data-font-size="36"] { font-size: 36px; }
 
 .dialog {
   position: fixed;
