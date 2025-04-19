@@ -62,18 +62,28 @@ async function markItemAsBought(id) {
 async function fetchWithAuth(url, options = {}) {
   const token = getFromStorage("authToken", null);
   if (!token) {
-    window.location.href = "login.html"; // Redirect to login if no token
+    window.location.href = "login.html";
     return;
   }
 
   options.headers = {
     ...options.headers,
-    Authorization: token, // Add the token to the request headers
+    Authorization: token,
   };
 
   const response = await fetch(url, options);
   if (response.status === 401) {
-    alert("Session expired. Please log in again.");
+    // Try to parse error for session expiration
+    try {
+      const data = await response.clone().json();
+      if (data && data.error && data.error.toLowerCase().includes("session expired")) {
+        alert("Session expired. Please log in again.");
+      } else {
+        alert("Unauthorized. Please log in again.");
+      }
+    } catch {
+      alert("Session expired or unauthorized. Please log in again.");
+    }
     localStorage.removeItem("authToken");
     window.location.href = "login.html";
   }

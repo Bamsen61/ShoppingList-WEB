@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify, send_from_directory, g
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, db
-from datetime import datetime  # Import to get the current date
+from datetime import datetime, timedelta, timezone  # Add timezone import
 import secrets  # For generating secure tokens
 from functools import wraps
 import os
@@ -38,14 +38,20 @@ items_ref = db.reference("handleliste")
 
 # In-memory storage for simplicity (use a database in production)
 USERS = {"Morten": "President", "Linh": "Smile1982"}  # Replace with your usernames and passwords
-TOKENS = {}  # Maps tokens to usernames
+TOKENS = {}  # Maps tokens to dicts: {username, expires}
 TOKENS_FILE = os.path.join(os.path.dirname(__file__), 'tokens.json')
 
 # Load tokens from file at startup
 if os.path.exists(TOKENS_FILE):
     try:
         with open(TOKENS_FILE, 'r') as f:
-            TOKENS.update(json.load(f))
+            loaded = json.load(f)
+            # Convert old format if needed
+            for k, v in loaded.items():
+                if isinstance(v, str):
+                    TOKENS[k] = {"username": v, "expires": None}
+                else:
+                    TOKENS[k] = v
     except Exception as e:
         logging.error(f"Failed to load tokens from {TOKENS_FILE}: {e}")
 
@@ -57,13 +63,22 @@ def save_tokens():
     except Exception as e:
         logging.error(f"Failed to save tokens to {TOKENS_FILE}: {e}")
 
+# Helper to clean expired tokens
+def clean_expired_tokens():
+    now = datetime.now(timezone.utc).timestamp()
+    expired = [k for k, v in TOKENS.items() if v["expires"] and v["expires"] < now]
+    for k in expired:
+        del TOKENS[k]
+    if expired:
+        save_tokens()
+
 # Automatically log in as "Morten" during local debugging
 if not os.environ.get("FLY_APP_NAME"):
     @app.before_request
     def auto_login_for_debug():
         if request.endpoint not in ["static", "serve_frontend"]:
             g.debug_token = "debug-token"
-            TOKENS["debug-token"] = "Morten"
+            TOKENS["debug-token"] = {"username": "Morten", "expires": None}
 
 # Log incoming requests
 # @app.before_request
@@ -82,21 +97,33 @@ def login():
     if USERS.get(username) == password:
         # Generate a token
         token = secrets.token_hex(16)
-        TOKENS[token] = username
+        expires = (datetime.now(timezone.utc) + timedelta(days=300)).timestamp()  # 300 days expiry
+        TOKENS[token] = {"username": username, "expires": expires}
         save_tokens()  # Persist tokens on every change
-        return jsonify({"token": token}), 200
+        return jsonify({"token": token, "expires": expires}), 200
     return jsonify({"error": "Invalid username or password"}), 401
 
 # Authentication decorator
 def require_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        clean_expired_tokens()
         token = request.headers.get("Authorization")
         # Check for debug token in Flask's g (for local debug)
         if not token and hasattr(g, "debug_token"):
             token = g.debug_token
-        if token not in TOKENS:
+        token_data = TOKENS.get(token)
+        if not token_data:
             return jsonify({"error": "Unauthorized"}), 401
+        # Check expiration (None means no expiration)
+        if token_data["expires"] and token_data["expires"] < datetime.now(timezone.utc).timestamp():
+            del TOKENS[token]
+            save_tokens()
+            return jsonify({"error": "Session expired"}), 401
+        # Optionally: sliding expiration (refresh expiry on use)
+        if token_data["expires"]:
+            token_data["expires"] = (datetime.now(timezone.utc) + timedelta(days=30)).timestamp()
+            save_tokens()
         return f(*args, **kwargs)
     return decorated
 
