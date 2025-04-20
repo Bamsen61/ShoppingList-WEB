@@ -198,6 +198,15 @@ def itemsfor_markitemtobuy():
     result = person_items_sorted + top_buynumber_items + rest_items_sorted
     return jsonify(result)
 
+# Get a list of all items to buy, sorted  alphabetically by Name
+@app.route("/itemstobuy")
+@require_auth
+def itemstobuy():
+    items = items_ref.get() or {}
+    filtered = [dict(id=k, **v) for k, v in items.items() if v.get("Buy") == True]
+    sorted_items = sorted(filtered, key=lambda x: x.get("Name", ""))
+    return jsonify(sorted_items)
+
 if __name__ == "__main__":
     # app.run(debug=True)
     port = int(os.environ.get("PORT", 8080))

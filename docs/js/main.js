@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const list = document.getElementById("itemList");
   list.innerHTML = "";
 
-  items.sort((a, b) => a.Name.localeCompare(b.Name));
+  // items.sort((a, b) => a.Name.localeCompare(b.Name));
 
   items.forEach(item => {
     const li = document.createElement("li");
@@ -47,10 +47,11 @@ function updatePerson() {
 
 async function fetchItems(shop) {
   // Use fetchWithAuth to include the token in the request
-  const response = await fetchWithAuth(`${API_BASE}/all-items`);
+  // const response = await fetchWithAuth(`${API_BASE}/all-items`);
+  const response = await fetchWithAuth(`${API_BASE}/itemstobuy`);
   const items = await response.json();
 
-  if (shop.toLowerCase() === "all") {
+  if (shop.toLowerCase() === "all" || shop.toLowerCase() === "alle") {
     // Return all items with Buy = True
     return items.filter(item => item.Buy === true);
   }
