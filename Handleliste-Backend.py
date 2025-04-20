@@ -172,6 +172,32 @@ def delete_item():
     items_ref.child(item_id).delete()
     return ("", 204)
 
+# Get a custom list for markitemtobuy: 5 by person, 5 by BuyNumber, rest alphabetically
+@app.route("/itemsfor-markitemtobuy")
+@require_auth
+def itemsfor_markitemtobuy():
+    person = request.args.get("person", "")
+    items = items_ref.get() or {}
+    # Only items where Buy is False
+    filtered = [dict(id=k, **v) for k, v in items.items() if v.get("Buy") == False]
+
+    # Section 1: Top 5 items added by person, sorted by BuyNumber desc
+    person_items = [item for item in filtered if item.get("AddedBy", "") == person]
+    person_items_sorted = sorted(person_items, key=lambda x: x.get("BuyNumber", 0), reverse=True)[:5]
+    person_ids = set(item["id"] for item in person_items_sorted)
+
+    # Section 2: Top 5 items by BuyNumber (not already included), sorted by BuyNumber desc
+    not_person_items = [item for item in filtered if item["id"] not in person_ids]
+    top_buynumber_items = sorted(not_person_items, key=lambda x: x.get("BuyNumber", 0), reverse=True)[:5]
+    top_buynumber_ids = set(item["id"] for item in top_buynumber_items)
+
+    # Section 3: The rest, sorted alphabetically by Name
+    rest_items = [item for item in filtered if item["id"] not in person_ids and item["id"] not in top_buynumber_ids]
+    rest_items_sorted = sorted(rest_items, key=lambda x: x.get("Name", ""))
+
+    result = person_items_sorted + top_buynumber_items + rest_items_sorted
+    return jsonify(result)
+
 if __name__ == "__main__":
     # app.run(debug=True)
     port = int(os.environ.get("PORT", 8080))

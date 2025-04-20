@@ -3,18 +3,18 @@
 document.addEventListener("DOMContentLoaded", async () => {
   applySavedFontSize();
 
-  // Fetch all items from the backend
-  const res = await fetchWithAuth(`${API_BASE}/all-items`);
+  // Get the selected person from storage (default to Morten)
+  const person = getFromStorage("person", "Morten");
+
+  // Fetch items from the new backend endpoint with person parameter
+  const res = await fetchWithAuth(`${API_BASE}/itemsfor-markitemtobuy?person=${encodeURIComponent(person)}`);
   const items = await res.json();
 
   const list = document.getElementById("addList");
   list.innerHTML = "";
 
-  // Filter out items where Buy is True
-  const filteredItems = items.filter(item => item.Buy !== true);
-  filteredItems.sort((a, b) => a.Name.localeCompare(b.Name));
-  
-  filteredItems.forEach(item => {
+  // No need to filter or sort here, backend does it
+  items.forEach(item => {
     const li = document.createElement("li");
     li.classList.add("item-row");
 
