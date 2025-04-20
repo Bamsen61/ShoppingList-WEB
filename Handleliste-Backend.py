@@ -40,7 +40,7 @@ items_ref = db.reference("handleliste")
 # In-memory storage for simplicity (use a database in production)
 USERS = {"Morten": "President", "Linh": "Smile1982"}  # Replace with your usernames and passwords
 
-JWT_SECRET = os.environ.get("JWT_SECRET", "supersecretkey")
+JWT_SECRET = os.environ.get("JWT_SECRET", "qKGCaoPlnk0ZGOr")
 JWT_ALGORITHM = "HS256"
 JWT_EXP_DAYS = 300
 

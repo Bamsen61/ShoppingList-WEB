@@ -12,7 +12,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Filter out items where Buy is True
   const filteredItems = items.filter(item => item.Buy !== true);
-
+  filteredItems.sort((a, b) => a.Name.localeCompare(b.Name));
+  
   filteredItems.forEach(item => {
     const li = document.createElement("li");
     li.classList.add("item-row");
