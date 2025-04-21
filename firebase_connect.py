@@ -3,7 +3,7 @@ from firebase_admin import credentials, db
 from datetime import datetime  # Import to get today's date
 
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate("D:\\GIT\\ShoppingList-WEB\\handleliste-3bdaa-firebase-adminsdk-fbsvc-37480a5d30.json")
+cred = credentials.Certificate("D:\\GIT\\ShoppingList-WEB\\firebase-creds.json")
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://handleliste-3bdaa-default-rtdb.europe-west1.firebasedatabase.app/'  # Replace with your Realtime Database URL
 })
