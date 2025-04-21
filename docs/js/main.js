@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       currentItems = newItems;
       renderItemList(currentItems);
     }
-  }, 2000); // 2 seconds
+  }, 5000); // 5 seconds
 });
 
 function renderItemList(items) {
