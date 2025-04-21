@@ -3,7 +3,8 @@ let itemToDelete = null;
 document.addEventListener("DOMContentLoaded", async () => {
   applySavedFontSize();
 
-  const res = await fetch(`${API_BASE}/all-items`);
+  // Use fetchWithAuth to include the auth token
+  const res = await fetchWithAuth(`${API_BASE}/all-items`);
   const items = await res.json();
 
   const list = document.getElementById("deleteList");
