@@ -111,8 +111,12 @@ def get_items():
 @app.route("/all-items")
 @require_auth
 def get_all_items():
-    items = items_ref.get() or {}
-    return jsonify([dict(id=k, **v) for k, v in items.items()])
+  items = items_ref.get() or {}
+  sorted_items = sorted(
+    [dict(id=k, **v) for k, v in items.items()],
+    key=lambda x: x.get("Name", "")
+  )
+  return jsonify(sorted_items)
 
 # Add a new item to the database
 @app.route("/item/additemtodatabase", methods=["POST"])
