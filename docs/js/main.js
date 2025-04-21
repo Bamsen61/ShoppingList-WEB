@@ -10,12 +10,22 @@ document.addEventListener("DOMContentLoaded", async () => {
   const shop = getFromStorage("shop", "");
   document.getElementById("shopName").textContent = shop || "Select shop";
 
-  const items = await fetchItems(shop);
+  let currentItems = await fetchItems(shop);
+  renderItemList(currentItems);
+
+  // Timed update every 60 seconds
+  setInterval(async () => {
+    const newItems = await fetchItems(shop);
+    if (!areItemListsEqual(currentItems, newItems)) {
+      currentItems = newItems;
+      renderItemList(currentItems);
+    }
+  }, 2000); // 2 seconds
+});
+
+function renderItemList(items) {
   const list = document.getElementById("itemList");
   list.innerHTML = "";
-
-  // items.sort((a, b) => a.Name.localeCompare(b.Name));
-
   items.forEach(item => {
     const li = document.createElement("li");
     li.classList.add("item-row");
@@ -38,7 +48,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     list.appendChild(li);
   });
-});
+}
+
+function areItemListsEqual(listA, listB) {
+  if (listA.length !== listB.length) return false;
+  for (let i = 0; i < listA.length; i++) {
+    if (
+      listA[i].id !== listB[i].id ||
+      listA[i].Name !== listB[i].Name ||
+      listA[i].Shop !== listB[i].Shop
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
 
 function updatePerson() {
   const person = document.getElementById("personSelector").value;
