@@ -11,6 +11,7 @@ import os
 import logging
 import json
 import jwt  # PyJWT for JWT tokens
+import string
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -43,6 +44,12 @@ USERS = {"Morten": "President", "Linh": "Smile1982"}  # Replace with your userna
 JWT_SECRET = os.environ.get("JWT_SECRET", "qKGCaoPlnk0ZGOr")
 JWT_ALGORITHM = "HS256"
 JWT_EXP_DAYS = 300
+
+# Generate a global random string of 5 lowercase letters
+def _generate_state_string():
+    return ''.join(secrets.choice(string.ascii_lowercase) for _ in range(5))
+
+STATE_STRING = _generate_state_string()
 
 # Automatically log in as "Morten" during local debugging
 if not os.environ.get("FLY_APP_NAME"):
@@ -210,6 +217,10 @@ def itemstobuy():
     filtered = [dict(id=k, **v) for k, v in items.items() if v.get("Buy") == True]
     sorted_items = sorted(filtered, key=lambda x: x.get("Name", ""))
     return jsonify(sorted_items)
+
+@app.route("/statestring")
+def get_state_string():
+    return jsonify({"state": STATE_STRING})
 
 if __name__ == "__main__":
     # app.run(debug=True)
