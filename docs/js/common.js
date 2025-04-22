@@ -37,8 +37,11 @@ function applySavedFontSize() {
 function changeShop() {
   const newShop = prompt("Enter shop name:", getFromStorage("shop"));
   if (newShop) {
-    setToStorage("shop", newShop);
-    location.reload();
+    const trimmedShop = newShop.trim();
+    if (trimmedShop) {
+      setToStorage("shop", trimmedShop);
+      location.reload();
+    }
   }
 }
 
