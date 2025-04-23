@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (e) {
       // Optionally handle error
     }
-  }, 5000); // 5 seconds
+  }, 4000); // 4 seconds
 });
 
 function renderItemList(items) {
