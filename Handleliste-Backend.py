@@ -128,6 +128,7 @@ def get_all_items():
 # Add a new item to the database
 @app.route("/item/additemtodatabase", methods=["POST"])
 def add_item():
+    global STATE_STRING
     data = request.json
     data["Buy"] = True
     data["BuyNumber"] = 0
@@ -140,6 +141,7 @@ def add_item():
 # Mark an item to buy
 @app.route("/item/markitemtobuy", methods=["POST"])
 def mark_item_to_buy():
+    global STATE_STRING
     item_id = request.json["id"]
     items_ref.child(item_id).update({"Buy": True})
     STATE_STRING = _generate_state_string() # Generate a new state string to triger a refresh in the frontend
@@ -148,6 +150,7 @@ def mark_item_to_buy():
 # Mark an item as bought
 @app.route("/item/markitemasbought", methods=["POST"])
 def buy_item():
+    global STATE_STRING
     item_id = request.json["id"]
     bought_by = request.json.get("BoughtBy", "Anonymous")  # Get the name of the person who bought the item
 
