@@ -13,12 +13,42 @@ document.addEventListener("DOMContentLoaded", async () => {
   let currentItems = await fetchItems(shop);
   renderItemList(currentItems);
 
-  // Timed update every 60 seconds
+  // Fetch and store the initial state string
+  let lastStateString = null;
+  let lastFetchedState = null;
+  try {
+    const stateRes = await fetch(`${API_BASE}/statestring`);
+    const stateData = await stateRes.json();
+    lastStateString = stateData.state;
+    lastFetchedState = stateData.state;
+    // Update debug section
+    if (document.getElementById("lastStateString")) {
+      document.getElementById("lastStateString").textContent = lastStateString;
+      document.getElementById("currentStateString").textContent = stateData.state;
+    }
+  } catch (e) {
+    lastStateString = null;
+    lastFetchedState = null;
+  }
+
+  // Periodically check if the state string has changed
   setInterval(async () => {
-    const newItems = await fetchItems(shop);
-    if (!areItemListsEqual(currentItems, newItems)) {
-      currentItems = newItems;
-      renderItemList(currentItems);
+    try {
+      const stateRes = await fetch(`${API_BASE}/statestring`);
+      const stateData = await stateRes.json();
+      // Update debug section
+      if (document.getElementById("lastStateString")) {
+        document.getElementById("lastStateString").textContent = lastStateString;
+        document.getElementById("currentStateString").textContent = stateData.state;
+      }
+      if (stateData.state !== lastStateString) {
+        lastStateString = stateData.state;
+        const newItems = await fetchItems(shop);
+        currentItems = newItems;
+        renderItemList(currentItems);
+      }
+    } catch (e) {
+      // Optionally handle error
     }
   }, 5000); // 5 seconds
 });

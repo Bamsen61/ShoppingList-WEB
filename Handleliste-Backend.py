@@ -134,6 +134,7 @@ def add_item():
     data["BoughtDate"] = [None] * 10
     data["AddedBy"] = data.get("AddedBy", "Anonymous")  # Default to "Anonymous" if not provided
     items_ref.push(data)
+    STATE_STRING = _generate_state_string() # Generate a new state string to triger a refresh in the frontend
     return ("", 204)
 
 # Mark an item to buy
@@ -141,6 +142,7 @@ def add_item():
 def mark_item_to_buy():
     item_id = request.json["id"]
     items_ref.child(item_id).update({"Buy": True})
+    STATE_STRING = _generate_state_string() # Generate a new state string to triger a refresh in the frontend
     return ("", 204)
 
 # Mark an item as bought
@@ -167,14 +169,16 @@ def buy_item():
     }
 
     items_ref.child(item_id).update(updated_data)
+    STATE_STRING = _generate_state_string() # Generate a new state string to triger a refresh in the frontend
     return ("", 204)
 
 # Set Buy = False for existing item
-@app.route("/item/remove", methods=["POST"])
-def remove_item():
-    item_id = request.json["id"]
-    items_ref.child(item_id).update({"Buy": False})
-    return ("", 204)
+# Replaced by markitemasbought. To be removed in the future.
+# @app.route("/item/remove", methods=["POST"])
+# def remove_item():
+#     item_id = request.json["id"]
+#     items_ref.child(item_id).update({"Buy": False})
+#     return ("", 204)
 
 # Delete item
 @app.route("/item", methods=["DELETE"])
