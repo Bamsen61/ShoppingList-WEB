@@ -18,7 +18,7 @@ ref = db.reference('handleliste')
 CSV_PATH = r"C:\Users\morte\OneDrive\Desktop\Handleliste-Export.csv"
 
 FIELDNAMES = [
-    "Name", "Shop", "AddedBy", "BoughtBy", "BuyNumber", "Buy"
+    "ID", "Name", "Shop", "AddedBy", "BoughtBy", "BuyNumber", "Buy"
 ] + [f"BoughtDate {i}" for i in range(10)]
 
 def main():
@@ -33,6 +33,7 @@ def main():
             bought_dates = row.get("BoughtDate", [])
             bought_dates = bought_dates if isinstance(bought_dates, list) else []
             csv_row = {
+                "ID": key,
                 "Name": row.get("Name", ""),
                 "Shop": row.get("Shop", ""),
                 "AddedBy": row.get("AddedBy", ""),
