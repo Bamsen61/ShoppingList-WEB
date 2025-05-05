@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const person = getFromStorage("person", "Morten");
   document.getElementById("personSelector").value = person;
 
-  const shop = getFromStorage("shop", "");
+  const shop = getFromStorage("shop", "Alle");
   document.getElementById("shopName").textContent = shop || "Select shop";
 
   let currentItems = await fetchItems(shop);
