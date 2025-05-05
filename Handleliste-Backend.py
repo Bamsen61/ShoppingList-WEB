@@ -108,10 +108,10 @@ def require_auth(f):
 @app.route("/items")
 @require_auth
 def get_items():
-    shop = request.args.get("shop", "").lower()
+    shop = request.args.get("shop", "Alle").lower()
     items = items_ref.get() or {}
     filtered = [dict(id=k, **v) for k, v in items.items()
-                if v.get("Buy") == True and v.get("Shop", "").lower() == shop]
+                if v.get("Buy") == True and v.get("Shop", "Alle").lower() == shop]
     return jsonify(filtered)
 
 # Get all items
