@@ -133,7 +133,7 @@ def add_item():
     data["Buy"] = True
     data["BuyNumber"] = 0
     data["BoughtDate"] = [None] * 10
-    data["AddedBy"] = data.get("AddedBy", "Anonymous")  # Default to "Anonymous" if not provided
+    data["AddedBy"] = data.get("AddedBy", "Morten")  # Default to "Morten" if not provided
     items_ref.push(data)
     STATE_STRING = _generate_state_string() # Generate a new state string to triger a refresh in the frontend
     return ("", 204)
@@ -152,7 +152,7 @@ def mark_item_to_buy():
 def buy_item():
     global STATE_STRING
     item_id = request.json["id"]
-    bought_by = request.json.get("BoughtBy", "Anonymous")  # Get the name of the person who bought the item
+    bought_by = request.json.get("BoughtBy", "Morten")  # Get the name of the person who bought the item
 
     # Retrieve the current item data
     item = items_ref.child(item_id).get()

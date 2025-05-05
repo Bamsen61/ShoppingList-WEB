@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function submitItem() {
   const Name = document.getElementById("itemName").value.trim();
   const Shop = document.getElementById("itemShop").value.trim();
-  const AddedBy = getFromStorage("person", "Anonymous"); // Retrieve the selected person from local storage
+  const AddedBy = getFromStorage("person", "Morten"); // Retrieve the selected person from local storage
 
   if (!Name || !Shop) {
     alert("Name and Shop are required.");
