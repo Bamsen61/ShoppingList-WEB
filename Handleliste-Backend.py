@@ -200,13 +200,15 @@ def itemsfor_markitemtobuy():
     filtered = [dict(id=k, **v) for k, v in items.items() if v.get("Buy") == False]
 
     # Section 1: Top 5 items added by person, sorted by BuyNumber desc
+    # 2025-05-25 - Changed to 15 items
     person_items = [item for item in filtered if item.get("AddedBy", "") == person]
-    person_items_sorted = sorted(person_items, key=lambda x: x.get("BuyNumber", 0), reverse=True)[:5]
+    person_items_sorted = sorted(person_items, key=lambda x: x.get("BuyNumber", 0), reverse=True)[:15]
     person_ids = set(item["id"] for item in person_items_sorted)
 
     # Section 2: Top 5 items by BuyNumber (not already included), sorted by BuyNumber desc
+    # 2025-05-25 - Changed to 1 item so I don't need to change the logic
     not_person_items = [item for item in filtered if item["id"] not in person_ids]
-    top_buynumber_items = sorted(not_person_items, key=lambda x: x.get("BuyNumber", 0), reverse=True)[:5]
+    top_buynumber_items = sorted(not_person_items, key=lambda x: x.get("BuyNumber", 0), reverse=True)[:1]
     top_buynumber_ids = set(item["id"] for item in top_buynumber_items)
 
     # Section 3: The rest, sorted alphabetically by Name
